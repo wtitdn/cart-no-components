@@ -1,0 +1,27 @@
+new Vue(){
+    el='#app',
+    data:{
+        goods[
+            {
+            img:"",
+            name:"商品名称1",
+            price:'23'
+            },
+            {
+                img:"",
+                name:"商品名称1",
+                price:'23'
+            },
+            {
+                img:"",
+                name:"商品名称1",
+                price:'23'
+            }
+        ]
+    },
+    methods:{
+        decrease(index){
+            this.books.[index].count--;
+        }
+    }
+}

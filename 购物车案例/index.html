@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css.css">
+    <script src="../vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <table>
+         <caption><b>商场</b></caption>
+         <thead>
+             <tr>
+                <th>商品图案</th>
+                <th>商品名称</th><!--小表格内字体加粗-->
+                <th>商品单价</th>
+                <th>添加购物车</th>
+             </tr>
+         </thead>
+         <tbody>
+            <tr v-for="(item,index) in goods" >
+                <td><img v-bind:src="item.img" alt=""></td>
+                <td>{{item.name}}</td>
+                <td>{{item.price|showPrice}}</td>
+                <td>
+                    <button @click="addToCart(index)">添加</button>
+                </td>
+            </tr>
+         </tbody>
+        </table>
+        <table>
+            <caption><b>购物车</b></caption><!--caption是表格的大标题-->
+        <thead>
+            <tr>
+            <th>商品图案</th>
+            <th>商品名称</th><!--小表格内字体加粗-->
+            <th>商品单价</th>
+            <th>个数</th>
+            <th>移除</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tr> 
+            <tr v-for="(item,index) in cart">
+                <td>
+                    <img v-bind:src="item.img" alt="">
+                </td>
+                <td>{{item.name}}</td>
+                <td>{{item.price|showPrice}}</td>
+                <td>
+                    <button @click="decrease(index)" v-bind:disabled="item.count<=1">-</button>
+                    {{item.count}}
+                    <button @click="increase(index)">+</button>
+                </td>
+                <td>
+                    <button @click="remove(index)">移除</button>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+        <div v-if="cart.length" id="cart">
+            <h2>
+                商品总价为：{{totalPrice|showPrice}}
+            </h2>
+        </div>
+        <div v-else id="cart">
+            <h2>
+                购物车为空！
+            </h2>
+        </div> 
+        <div id="cart">
+            <img src="./logo_64_eyes.png" alt="">
+            <!-- <button @click="addgood">添加商品</button> -->
+        </div>
+    </div>
+<script>
+    new Vue({
+    el:'#app',
+    filters:{//过滤器没生效 原因：filter拼错
+        showPrice:function(value){
+            return '￥'+value.toFixed(2)
+        }
+    },  
+    data:{
+        cart:[//购物车数组
+
+        ],
+        goods:[//商品数组
+            {
+                img:"./logo_64_eyes.png",
+                name:"商品名称1",
+                price:25,
+                count:1
+            },
+            {
+                img:"./logo_64_eyes.png",
+                name:"商品名称2",
+                price:29,
+                count:1
+            },
+            {
+                img:"./logo_64_eyes.png",
+                name:"商品名称3",
+                price:24,
+                count:1
+            }
+        ],  
+    },
+    methods:{
+        decrease(index){//增减和删除没生效 原因：没有传参
+            this.cart[index].count--;
+        },
+        increase(index){
+            this.cart[index].count++;
+        },
+        remove(index){
+            this.cart.splice(index,1)  
+        },
+        addToCart(index){    
+            var good={//导入good的对象进行比较
+                img:this.goods[index].img,
+                name:this.goods[index].name,
+                price:this.goods[index].price,
+                count:1
+            };
+            if(this.cart.length){//判断是否为空
+                var flag=true;//引入flag变量进行判别
+                for(value of this.cart){//循环遍历
+                    if(value.name==good.name){//如果有重名 count自增
+                        value.count++;
+                        flag=false
+                    }
+                }
+                if (flag==true){
+                    this.cart.push(good)
+                }
+            // this.cart.push(good)
+            
+        }
+            else{//空的直接压入
+                this.cart.push(good)
+            }
+        }
+    },
+    computed:{
+        totalPrice(){
+             return this.cart.reduce((preValue, item) => {//
+             return preValue + item.price * item.count;//reduce 对数组中的每一个进行回调函数 第一个参数是回调函数 第二个参数是初始值 如果有赋值初始值就会将初始值给第一个参数
+        }, 0)
+                    }
+    },
+
+})
+</script>
+</body>
+</html>
